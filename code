@@ -1,0 +1,25 @@
+import requests
+import csv
+
+# Make a request to API 1 and get the response
+api_url = "https://dummyjson.com/carts"
+response = requests.get(api_url)
+data = response.json()
+
+# Filter data with discountPercentage less than 15.0
+filtered = []
+for cart in data['carts']:
+    for product in cart['products']:
+        if 'discountPercentage' in product:
+            discount_percentage = product['discountPercentage']
+            if discount_percentage < 15:
+                filtered.append([str(discount_percentage)])
+
+# Save filtered data to CSV
+if filtered:
+    with open('filtered.csv', 'w', newline='') as csvfile:
+        writer = csv.writer(csvfile)
+        writer.writerow(['discountPercentage'])
+        writer.writerows(filtered)
+
+print("Filtered data saved to filtered.csv")
